@@ -88,7 +88,12 @@ $(function () {
                 var clients = json.data;
                 draw(clients);
             } else if(json.type == 'collision'){ // lorsqu'une collision apparait
-
+                var win = Math.random();
+                if(win > 0.5){
+                    alert("Vous avez "+win+" !");
+                } else {
+                    alert("Vous avez perdu");
+                }
                 json = JSON.stringify({ type:'deconnexion', data: voiture });
                 connection.send(json);
                 console.log('Vous avez perdu ! Vous allez être déconnecté.');
@@ -123,9 +128,6 @@ $(function () {
         // ajout d'un evenement si une des touches du clavier est appuyée
         window.addEventListener("keydown", keypress_handler, false);
 
-        /***** Gestion de la webCam ******/
-
-
     });
 
     /**
@@ -134,13 +136,12 @@ $(function () {
     function update() {
 
         if ( accelerer ) {
-            var data = "accelerer";
-            var json = JSON.stringify({ type:'movement', data: data });
+            var json = JSON.stringify({ type:'movement', data: 'run' });
             connection.send(json);
             accelerer = false;
         }
         if ( ralentir ) {
-            connection.send(JSON.stringify({ type : 'movement', data : 'ralentir' }));
+            connection.send(JSON.stringify({ type : 'movement', data : 'slow' }));
             ralentir = false;
         }
         if ( droite ) {
@@ -171,6 +172,7 @@ function drawInit(voiture) {
     context.fillStyle = voiture[0];
     context.stroke();
 
+
 }
 
 /**
@@ -186,16 +188,17 @@ function draw(clients) {
 
     for(var i=0; i<clients.length; i++){
         var voitureServeur = clients[i];
-        console.log("\n couleur :" +voitureServeur[0]+"\n");
+        //console.log("\n couleur :" +voitureServeur[0]+"\n");
         context.beginPath();
         context.arc(voitureServeur[1], voitureServeur[2], 10, 0, Math.PI * 2, true); // Outer circle
 
         context.fillStyle = voitureServeur[0];
         context.fill();
-        console.log(voitureServeur[0]);
+        // console.log(voitureServeur[0]);
         context.stroke();
     }
 
+    console.log(voitureServeur[0]+" ["+voitureServeur[1]+","+voitureServeur[2]+"]");
 
 
 }
